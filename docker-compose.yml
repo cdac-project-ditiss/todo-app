@@ -5,6 +5,22 @@ networks:
     driver: overlay
 
 services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: mytododb
+      MYSQL_USER: todo_user
+      MYSQL_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - todo-net
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+
   web:
     image: patilchinu/todoapp:latest
     ports:
@@ -25,22 +41,6 @@ services:
           - node.role == worker
       restart_policy:
         condition: on-failure
-
-  db:
-    image: mysql:5.7
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: mytododb
-      MYSQL_USER: todo_user
-      MYSQL_PASSWORD: password
-    volumes:
-      - db_data:/var/lib/mysql
-    networks:
-      - todo-net
-    deploy:
-      placement:
-        constraints:
-          - node.role == manager
 
 volumes:
   db_data:
