@@ -20,7 +20,7 @@ def inject_now():
 def get_db():
     if not hasattr(g, 'db'):
         g.db = mysql.connector.connect(
-            host=os.getenv('DB_HOST', 'localhost'),
+            host=os.getenv('DB_HOST', 'db'),
             user=os.getenv('DB_USER', 'todo_user'),
             password=os.getenv('DB_PASSWORD', 'password'),
             database=os.getenv('DB_NAME', 'mytododb')
