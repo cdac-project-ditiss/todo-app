@@ -28,8 +28,7 @@ services:
       - todo-net
     deploy:
       placement:
-        constraints:
-          - node.role == worker
+        constraints: [node.role == worker]
 
 networks:
   todo-net:
