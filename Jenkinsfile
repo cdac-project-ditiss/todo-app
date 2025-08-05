@@ -1,28 +1,25 @@
 pipeline {
     agent any
+
     stages {
-        stage('Clone') {
+        stage('Clone Repo') {
             steps {
-                git 'https://github.com/cdac-project-ditiss/todo-app'
+                git 'https://github.com/cdac-project-ditiss/todo-app.git'
             }
         }
-        stage('Build') {
+        stage('Deploy to Docker Swarm') {
             steps {
-                sh 'docker-compose build'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                sh 'docker stack deploy --compose-file docker-compose.yml todoapp'
+                sh 'docker stack deploy -c docker-compose.yml todoapp'
             }
         }
     }
+
     post {
         success {
-            mail to: 'noddytester8005@gmail.com', subject: 'Build Success', body: 'ToDo app deployed!'
+            echo '✅ Auto Deployment Successful!'
         }
         failure {
-            mail to: 'noddytester8005@gmail.com', subject: 'Build Failed', body: 'Check Jenkins logs.'
+            echo '❌ Deployment Failed.'
         }
     }
 }
