@@ -1,9 +1,18 @@
-version: '3'
+version: '3.8'
+
 services:
   web:
     image: patilchinu/todoapp:latest
     ports:
       - "5000:5000"
+    deploy:
+      mode: replicated
+      replicas: 3
+      placement:
+        constraints:
+          - node.role == worker
+      restart_policy:
+        condition: on-failure
     depends_on:
       - db
 
@@ -14,7 +23,10 @@ services:
       MYSQL_DATABASE: todo
     volumes:
       - db_data:/var/lib/mysql
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
 
 volumes:
   db_data:
-
