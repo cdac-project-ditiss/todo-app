@@ -1,10 +1,13 @@
-FROM python:3.9
+FROM python
 
 WORKDIR /app
 
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
-
 COPY . .
 
-CMD ["python", "app.py"]
+RUN pip install flask
+RUN pip install python-dotenv
+RUN pip install mysql-connector-python
+
+EXPOSE 5000
+
+CMD python app.py
