@@ -2,37 +2,39 @@ version: '3.8'
 
 services:
   web:
-    build: .
-    container_name: todo-web
+    image: patilchinu/loginapp:latest       # <-- Replace with your actual Docker Hub image if different
     ports:
-      - "5000:5000"
+      - "5000:5000"                          # <-- Changed to avoid conflict with existing service
     environment:
-      - DB_HOST=db
-      - DB_USER=todo_user
-      - DB_PASSWORD=password
-      - DB_NAME=mytododb
-    depends_on:
-      - db
+      DB_HOST: db
+      DB_USER: login_user
+      DB_PASSWORD: loginpass
+      DB_NAME: logindb
     networks:
-      - todo-net
+      - login-net
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
 
   db:
     image: mysql:5.7
-    container_name: todo-db
-    restart: always
     environment:
+      MYSQL_DATABASE: logindb
+      MYSQL_USER: login_user
+      MYSQL_PASSWORD: loginpass
       MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: mytododb
-      MYSQL_USER: todo_user
-      MYSQL_PASSWORD: password
     volumes:
       - db-data:/var/lib/mysql
     networks:
-      - todo-net
+      - login-net
+    deploy:
+      placement:
+        constraints: [node.role == worker]
 
 networks:
-  todo-net:
-    driver: bridge
+  login-net:
+    driver: overlay
 
 volumes:
   db-data:

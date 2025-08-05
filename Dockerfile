@@ -1,13 +1,9 @@
-FROM python
+FROM python:3.9-slim
 
 WORKDIR /app
-
 COPY . .
 
-RUN pip install flask
-RUN pip install python-dotenv
-RUN pip install mysql-connector-python
+RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 5000
-
-CMD python app.py
+CMD ["python", "app.py"]

@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  web:
+    image: patilchinu/loginapp:latest       # <-- Replace with your actual Docker Hub image if different
+    ports:
+      - "5001:5000"                          # <-- Changed to avoid conflict with existing service
+    environment:
+      DB_HOST: db
+      DB_USER: login_user
+      DB_PASSWORD: loginpass
+      DB_NAME: logindb
+    networks:
+      - login-net
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: logindb
+      MYSQL_USER: login_user
+      MYSQL_PASSWORD: loginpass
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - login-net
+    deploy:
+      placement:
+        constraints: [node.role == worker]
+
+networks:
+  login-net:
+    driver: overlay
+
+volumes:
+  db-data:
