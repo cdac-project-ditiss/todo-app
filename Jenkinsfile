@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'swarm-manager'
+    }
 
     stages {
         stage('Deploy to Docker Swarm') {
